@@ -7,15 +7,12 @@ play = pd.read_csv("Play_by_Play.txt",delimiter="\t")
 lineup = pd.read_csv("Game_Lineup.txt",delimiter="\t")
 codes = pd.read_csv("Event_Codes.txt",delimiter="\t")
 
-print(play.Game_id)
-print(codes)
-# print(len(play.index))
-
 period = 0
 game = 0
-
-def update_stats():
-    return
+stats = lineup[lineup['Period']==0][['Game_id','Person_id']]
+stats['Points_made'] = stats.shape[0]*[0]
+stats['Points_given'] = stats.shape[0]*[0]
+stats['Number_possessions'] = stats.shape[0]*[0]
 
 for i in range(len(play)):
     if game != play.Game_id[i]:
@@ -23,7 +20,5 @@ for i in range(len(play)):
 
     if period != play.Period[i]:
         period = play.Period[i]
-        lineup = hf.get_lineup(game,period)
-
-    
+        lineup = hf.get_lineup(lineup,game,period)
 
