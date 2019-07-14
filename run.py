@@ -43,8 +43,10 @@ for i in range(looper):
 
 	if flag_dead==1:
 		hf.update_possessions(stats,lineup_copy,event,team,prevPlayer)
+		hf.update_stats(stats,lineup_copy,event)
 	else:
 		hf.update_possessions(stats,lineup_list,event,team,prevPlayer)
+		hf.update_stats(stats,lineup_list,event)
 
 	team=event['Team_id']
 	prevPlayer = event['Person1']

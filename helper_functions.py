@@ -82,6 +82,74 @@ def update_possessions(stats,lineup_dict,event,prev_team,prevPlayer):
 
     return 0
 
-def update_stats(stats,lineup_dict,event,action,person1,person2):
+def get_team1(lineup_dict,event):
+    lineup_players=lineup_dict.keys()
+    team1=lineup_dict[event['Person1']]
+    lineup_teams=lineup_dict.values()
+
+    team1_lineup=[]
+    team2_lineup=[]
+
+
+    for each_key in lineup_players:
+        if lineup_dict[each_key]==team1:
+            team1_lineup.append(each_key)
+        else:
+            team2_lineup.append(each_key)
+
+    return team1_lineup, team2_lineup
+
+
+
+def update_stats(stats,lineup_dict,event):
+
+    if event['Person1']=='0370a0d090da0d0edc6319f120187e0e':
+        return stats
+
+    lineup_players=lineup_dict.keys()
+    lineup_teams=lineup_dict.values()
+
+    # team1=lineup_dict[event['Person1']]
+
+    # for each_key in lineup_players:
+    #     if lineup_dict[each_key]==team1:
+    #         team1_lineup.append(each_key)
+    #     else:
+    #         team2_lineup.append(each_key)
+
+
+    if event['Event_Msg_Type']==1:
+        team1_lineup,team2_lineup=get_team1(lineup_dict,event)
+        if event['Option1']==3:
+            index=0
+            for each_player in team1_lineup:
+                stats[each_player]['PSc']+=3
+                stats[team2_lineup[index]]['PAg']+=3
+                index+=1
+
+        elif event['Option1']==2:
+            index=0
+            for each_player in team1_lineup:
+                stats[each_player]['PSc']+=2
+                stats[team2_lineup[index]]['PAg']+=2
+                index+=1
+
+
+    elif event['Event_Msg_Type']==3 and event['Option1']==1:
+        team1_lineup,team2_lineup=get_team1(lineup_dict,event)
+
+        index=0
+        for each_player in team1_lineup:
+            stats[each_player]['PSc']+=1
+            stats[team2_lineup[index]]['PAg']+=1
+            index+=1
+
+
+
+
+
+
+
+
     # Uses the event and action as they pertain to person1 and person2 to update the stats according to the current lineup.
-    return
+    return stats
