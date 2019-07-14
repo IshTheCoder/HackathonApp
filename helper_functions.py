@@ -20,7 +20,7 @@ def get_starting_lineup(lineup,gameID,gamePeriod):
     lineup_dict_new=invert(lineup_dict)
     return lineup_dict_new
 
-def update_lineup(lineup,event):
+def update_lineup(lineup,roster,event):
     # Substitutes in player2 for player1.
     ## Inputs:
     ### lineup_dict: dictionary with Team_id as keys and Person_id as values
@@ -37,7 +37,11 @@ def update_lineup(lineup,event):
         #     print(event)
         #     #print(lineup_dict.keys())
 
-        lineup[event['Person2']]=lineup.pop(event['Person1'])
+        try:
+            lineup[event['Person2']]=lineup.pop(event['Person1'])
+        except:
+            lineup[event['Person2']]=roster[(roster['Game_id']==event['Game_id']) & (roster['Person_id']==event['Person2'])].Team_id.tolist()[0]
+
 
         #print(lineup_dict)
         #print('boom')
@@ -59,7 +63,7 @@ def update_lineup(lineup,event):
     
 
 
-def update_possessions(stats,lineup_dict,event,prev_team,prevPlayer):
+def update_possessions(stats,lineup_dict,event,prev_team,prevPlayerTeam):
 
     lineup_list=lineup_dict.keys()
     if event['Event_Msg_Type']== 1 or event['Event_Msg_Type']==5 or event['Event_Msg_Type']==3:
@@ -72,10 +76,10 @@ def update_possessions(stats,lineup_dict,event,prev_team,prevPlayer):
         #print('Rebound')
         #print(event['Event_Num'])
         # if lineup_dict[prevPlayer] != event['Team_id']:
-        print(event)
-        print(lineup_dict[prevPlayer]==prev_team)
-        # if lineup_dict[prevPlayer] != event['Team_id']:
-        if prev_team != event['Team_id']:
+        # print(event)
+        # print(lineup_dict[prevPlayer]==prev_team)
+        if prevPlayerTeam != event['Team_id']:
+        # if prev_team != event['Team_id']:
             for each_player in lineup_list:
                 stats[each_player]['Possessions']+=1
             #print(stats)
@@ -90,7 +94,7 @@ def get_team1(lineup_dict,event):
     team1_lineup=[]
     team2_lineup=[]
 
-
+    # print(lineup_dict)
     for each_key in lineup_players:
         if lineup_dict[each_key]==team1:
             team1_lineup.append(each_key)
@@ -102,7 +106,7 @@ def get_team1(lineup_dict,event):
 
 
 def update_stats(stats,lineup_dict,event):
-
+    print(event)
     if event['Person1']=='0370a0d090da0d0edc6319f120187e0e':
         return stats
 
@@ -121,35 +125,34 @@ def update_stats(stats,lineup_dict,event):
     if event['Event_Msg_Type']==1:
         team1_lineup,team2_lineup=get_team1(lineup_dict,event)
         if event['Option1']==3:
-            index=0
+            # index=0
             for each_player in team1_lineup:
                 stats[each_player]['PSc']+=3
-                stats[team2_lineup[index]]['PAg']+=3
-                index+=1
+            for each_player in team2_lineup:
+                stats[each_player]['PAg']+=3
+                # stats[team2_lineup[index]]['PAg']+=3
+                # index+=1
 
         elif event['Option1']==2:
-            index=0
+            # index=0
             for each_player in team1_lineup:
                 stats[each_player]['PSc']+=2
-                stats[team2_lineup[index]]['PAg']+=2
-                index+=1
+            for each_player in team2_lineup:
+                stats[each_player]['PAg']+=2
+                # stats[team2_lineup[index]]['PAg']+=2
+                # index+=1
 
 
     elif event['Event_Msg_Type']==3 and event['Option1']==1:
         team1_lineup,team2_lineup=get_team1(lineup_dict,event)
 
-        index=0
+        # index=0
         for each_player in team1_lineup:
             stats[each_player]['PSc']+=1
-            stats[team2_lineup[index]]['PAg']+=1
-            index+=1
-
-
-
-
-
-
-
+        for each_player in team2_lineup:
+            stats[each_player]['PAg']+=1
+            # stats[team2_lineup[index]]['PAg']+=1
+            # index+=1
 
     # Uses the event and action as they pertain to person1 and person2 to update the stats according to the current lineup.
     return stats
