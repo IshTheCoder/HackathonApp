@@ -20,6 +20,8 @@ stats = lineup[lineup['Period']==0][['Game_id','Person_id']]
 stats['PSc'] = stats.shape[0]*[0]
 stats['PAg'] = stats.shape[0]*[0]
 stats['Possessions'] = stats.shape[0]*[0]
+stats['ORTG']= stats.shape[0]*[0]
+stats['DRTG']= stats.shape[0]*[0]
 
 # stats.loc[(stats['Game_id']=='006728e4c10e957011e1f24878e6054a')&(stats['Person_id']=='ae53f8ba6761b64a174051da817785bc'),'Possessions']+=1
 
@@ -70,4 +72,14 @@ for i in range(looper):
 
 # print(stats)
 # print(len(stats.keys()))
+
+
+
+
+stats.loc[stats['Possessions']>=0,'ORTG']+=stats['PSc']/stats['Possessions']
+stats.loc[stats['Possessions']>=0,'DRTG']+=stats['PAg']/stats['Possessions']
+
+
+
+
 stats.to_csv('output.txt',sep="\t")
