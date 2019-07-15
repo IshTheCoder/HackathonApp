@@ -42,7 +42,6 @@ def update_lineup(lineup,roster,event):
         except:
             lineup[event['Person2']]=roster[(roster['Game_id']==event['Game_id']) & (roster['Person_id']==event['Person2'])].Team_id.tolist()[0]
 
-
         #print(lineup_dict)
         #print('boom')
 
@@ -67,10 +66,10 @@ def update_possessions(stats,lineup_dict,event,prev_team,prevPlayerTeam):
 
     lineup_list=lineup_dict.keys()
     if event['Event_Msg_Type']== 1 or event['Event_Msg_Type']==5 or event['Event_Msg_Type']==3:
-
         #Consider edge case, event code 5,0 i.e. Turnover- No turnover, what does it mean?
         for each_player in lineup_list:
-            stats[each_player]['Possessions']+=1
+            stats.loc[(stats['Game_id']==event['Game_id'])&(stats['Person_id']==each_player),'Possessions']+=1
+            # stats[each_player]['Possessions']+=1
         #print(stats)
     elif event['Event_Msg_Type']==4 and event['Action_Type']!=2:
         #print('Rebound')
@@ -81,7 +80,8 @@ def update_possessions(stats,lineup_dict,event,prev_team,prevPlayerTeam):
         if prevPlayerTeam != event['Team_id']:
         # if prev_team != event['Team_id']:
             for each_player in lineup_list:
-                stats[each_player]['Possessions']+=1
+                stats.loc[(stats['Game_id']==event['Game_id'])&(stats['Person_id']==each_player),'Possessions']+=1
+                # stats[each_player]['Possessions']+=1
             #print(stats)
 
     return 0
@@ -106,7 +106,7 @@ def get_team1(lineup_dict,event):
 
 
 def update_stats(stats,lineup_dict,event):
-    print(event)
+    # print(event)
     if event['Person1']=='0370a0d090da0d0edc6319f120187e0e':
         return stats
 
@@ -127,18 +127,22 @@ def update_stats(stats,lineup_dict,event):
         if event['Option1']==3:
             # index=0
             for each_player in team1_lineup:
-                stats[each_player]['PSc']+=3
+                stats.loc[(stats['Game_id']==event['Game_id'])&(stats['Person_id']==each_player),'PSc']+=3
+                # stats[each_player]['PSc']+=3
             for each_player in team2_lineup:
-                stats[each_player]['PAg']+=3
+                stats.loc[(stats['Game_id']==event['Game_id'])&(stats['Person_id']==each_player),'PAg']+=3
+                # stats[each_player]['PAg']+=3
                 # stats[team2_lineup[index]]['PAg']+=3
                 # index+=1
 
         elif event['Option1']==2:
             # index=0
             for each_player in team1_lineup:
-                stats[each_player]['PSc']+=2
+                stats.loc[(stats['Game_id']==event['Game_id'])&(stats['Person_id']==each_player),'PSc']+=2
+                # stats[each_player]['PSc']+=2
             for each_player in team2_lineup:
-                stats[each_player]['PAg']+=2
+                stats.loc[(stats['Game_id']==event['Game_id'])&(stats['Person_id']==each_player),'PAg']+=2
+                # stats[each_player]['PAg']+=2
                 # stats[team2_lineup[index]]['PAg']+=2
                 # index+=1
 
@@ -148,9 +152,11 @@ def update_stats(stats,lineup_dict,event):
 
         # index=0
         for each_player in team1_lineup:
-            stats[each_player]['PSc']+=1
+            stats.loc[(stats['Game_id']==event['Game_id'])&(stats['Person_id']==each_player),'PSc']+=1
+            # stats[each_player]['PSc']+=1
         for each_player in team2_lineup:
-            stats[each_player]['PAg']+=1
+            stats.loc[(stats['Game_id']==event['Game_id'])&(stats['Person_id']==each_player),'PAg']+=1
+            # stats[each_player]['PAg']+=1
             # stats[team2_lineup[index]]['PAg']+=1
             # index+=1
 

@@ -16,19 +16,21 @@ play = pd.concat([play.iloc[:8750],temp,play.iloc[8751:]],ignore_index=True)
 
 period = 0
 game = 0
-#stats = lineup[lineup['Period']==0][['Game_id','Person_id']]
-#stats['Points_made'] = stats.shape[0]*[0]
-#stats['Points_given'] = stats.shape[0]*[0]
-#stats['Number_possessions'] = stats.shape[0]*[0]
+stats = lineup[lineup['Period']==0][['Game_id','Person_id']]
+stats['PSc'] = stats.shape[0]*[0]
+stats['PAg'] = stats.shape[0]*[0]
+stats['Possessions'] = stats.shape[0]*[0]
+
+# stats.loc[(stats['Game_id']=='006728e4c10e957011e1f24878e6054a')&(stats['Person_id']=='ae53f8ba6761b64a174051da817785bc'),'Possessions']+=1
 
 roster = lineup[lineup['Period']==0][['Game_id','Person_id','Team_id']]
 looper=(len(play.index))
 
 team=0
 prevPlayerTeam=0
-stats=defaultdict(lambda: defaultdict(int))
+# stats=defaultdict(lambda: defaultdict(int))
 for i in range(looper):
-
+	print(i)
 	event=play.iloc[i,:]
 
 	if event['Event_Msg_Type'] != 20:
@@ -68,3 +70,4 @@ for i in range(looper):
 
 # print(stats)
 # print(len(stats.keys()))
+stats.to_csv('output.txt',sep="\t")
