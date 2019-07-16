@@ -32,7 +32,7 @@ def update_lineup(lineup,roster,event):
 
     if event['Event_Msg_Type']==8:
         #lineup_list.remove(event['Person1'])
-        lineup_list_final = list(map(lambda b: b.replace(event['Person1'],event['Person2']), lineup.keys()))
+        # lineup_list_final = list(map(lambda b: b.replace(event['Person1'],event['Person2']), lineup.keys()))
         # if event['Person1'] not in lineup.keys():
         #     print(event)
         #     #print(lineup_dict.keys())
@@ -65,7 +65,7 @@ def update_lineup(lineup,roster,event):
 def update_possessions(stats,lineup_dict,event,prev_team,prevPlayerTeam):
 
     lineup_list=lineup_dict.keys()
-    if event['Event_Msg_Type']== 1 or event['Event_Msg_Type']==5 or event['Event_Msg_Type']==3:
+    if (event['Event_Msg_Type']== 1) or (event['Event_Msg_Type']==5) or (event['Event_Msg_Type']==3 and event['Option1']==1 and (event['Action_Type'] in [10,12,15,16,19,20,22,26,29])) or (event['Event_Msg_Type']==13):
         #Consider edge case, event code 5,0 i.e. Turnover- No turnover, what does it mean?
         for each_player in lineup_list:
             stats.loc[(stats['Game_id']==event['Game_id'])&(stats['Person_id']==each_player),'Possessions']+=1
@@ -89,7 +89,7 @@ def update_possessions(stats,lineup_dict,event,prev_team,prevPlayerTeam):
 def get_team1(lineup_dict,event):
     lineup_players=lineup_dict.keys()
     team1=lineup_dict[event['Person1']]
-    lineup_teams=lineup_dict.values()
+    # lineup_teams=lineup_dict.values()
 
     team1_lineup=[]
     team2_lineup=[]
@@ -110,8 +110,8 @@ def update_stats(stats,lineup_dict,event):
     if event['Person1']=='0370a0d090da0d0edc6319f120187e0e':
         return stats
 
-    lineup_players=lineup_dict.keys()
-    lineup_teams=lineup_dict.values()
+    # lineup_players=lineup_dict.keys()
+    # lineup_teams=lineup_dict.values()
 
     # team1=lineup_dict[event['Person1']]
 
