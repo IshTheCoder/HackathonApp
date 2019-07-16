@@ -71,7 +71,7 @@ stats.loc[stats['Possessions']>0,'OffRtg']+=stats['PSc']*100/stats['Possessions'
 stats.loc[stats['Possessions']>0,'DefRtg']+=stats['PAg']*100/stats['Possessions']
 
 stats_final = stats[['Game_id','Person_id','OffRtg','DefRtg']]
-stats_final.to_csv('GoogleMeChuck_Q1_BBALL.csv',sep="\t")
+stats_final.to_csv('GoogleMeChuck_Q1_BBALL.csv',sep="\t",index=False)
 
 # stats_import = pd.read_csv("GoogleMeChuck_Q1_BBALL.csv",delimiter="\t")
 # min(stats_import.loc[stats_import['DefRtg']>0,'DefRtg'])
