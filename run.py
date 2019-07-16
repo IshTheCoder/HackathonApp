@@ -9,8 +9,8 @@ codes = pd.read_csv("Event_Codes.txt",delimiter="\t")
 
 # move substitution to fix key error for specific game
 temp = play.iloc[8754:8755]
-play = pd.concat([play.iloc[:8753],play.iloc[8755:]],ignore_index=True)
-play = pd.concat([play.iloc[:8750],temp,play.iloc[8751:]],ignore_index=True)
+play = pd.concat([play.iloc[:8754],play.iloc[8755:]],ignore_index=True)
+play = pd.concat([play.iloc[:8751],temp,play.iloc[8751:]],ignore_index=True)
 
 # play.to_csv('sortedPlay.txt',sep="\t")
 
@@ -20,17 +20,14 @@ stats = lineup[lineup['Period']==0][['Game_id','Person_id']]
 stats['PSc'] = stats.shape[0]*[0]
 stats['PAg'] = stats.shape[0]*[0]
 stats['Possessions'] = stats.shape[0]*[0]
-stats['ORTG']= stats.shape[0]*[0]
-stats['DRTG']= stats.shape[0]*[0]
-
-# stats.loc[(stats['Game_id']=='006728e4c10e957011e1f24878e6054a')&(stats['Person_id']=='ae53f8ba6761b64a174051da817785bc'),'Possessions']+=1
+stats['OffRtg']= stats.shape[0]*[0]
+stats['DefRtg']= stats.shape[0]*[0]
 
 roster = lineup[lineup['Period']==0][['Game_id','Person_id','Team_id']]
 looper=(len(play.index))
 
 team=0
 prevPlayerTeam=0
-# stats=defaultdict(lambda: defaultdict(int))
 for i in range(looper):
 	print(i)
 	event=play.iloc[i,:]
@@ -67,19 +64,11 @@ for i in range(looper):
 		if event['Event_Msg_Type']==2:
 			prevPlayerTeam = lineup_list[event['Person1']]
 
-		# if game != '006728e4c10e957011e1f24878e6054a':
-		# 	break
-
 # print(stats)
 # print(len(stats.keys()))
 
+stats.loc[stats['Possessions']>0,'OffRtg']+=stats['PSc']/stats['Possessions']
+stats.loc[stats['Possessions']>0,'DefRtg']+=stats['PAg']/stats['Possessions']
 
-
-
-stats.loc[stats['Possessions']>=0,'ORTG']+=stats['PSc']/stats['Possessions']
-stats.loc[stats['Possessions']>=0,'DRTG']+=stats['PAg']/stats['Possessions']
-
-
-
-
-stats.to_csv('output.txt',sep="\t")
+stats_final = stats[['Game_id','Person_id','OffRtg','DefRtg']]
+stats_final.to_csv('TEAMNAME_Q1_BBALL.csv',sep="\t")
